@@ -7,3 +7,4 @@ int compare_wided(double x_i, double x_i_ref); // файл тесты.спп
 void check_am_of_pt(int amount_of_passed_tests, int* inprocess); // файл тесты.спп
 
 #endif
+// suetologia, checking how vs code commit works;
