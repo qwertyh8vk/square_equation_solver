@@ -2,20 +2,23 @@
 #include "check_input.h"
 #include "tests.h"
 
-struct test_case test1 = {.a = 1,   .b = 5,    .c = 7,     .number_of_roots_ref = NEGATIVE_PENALTY,   .x1_ref = NAN,      .x2_ref = NAN};
-struct test_case test2 = {.a = 1,   .b = 8,    .c = 16,    .number_of_roots_ref = ONE_SOLUTION,       .x1_ref = -4,       .x2_ref = NAN};
-struct test_case test3 = {.a = 1,   .b = 7,    .c = 12,    .number_of_roots_ref = TWO_SOLUTIONS,      .x1_ref = -422,       .x2_ref = -3};
-struct test_case test4 = {.a = 1,   .b = 11,   .c = 30,    .number_of_roots_ref = TWO_SOLUTIONS,      .x1_ref = -6,       .x2_ref = -5};
+struct test_case test_array[AMOUNT_OF_TESTS] = { 
+    {.a = 1,    .b = 5,    .c = 7,     .number_of_roots_ref = NEGATIVE_PENALTY,   .x1_ref = NAN,      .x2_ref = NAN},
+    {.a = 1,    .b = 8,    .c = 16,    .number_of_roots_ref = ONE_SOLUTION,       .x1_ref = -4,       .x2_ref = NAN},
+    {.a = 1,    .b = 7,    .c = 12,    .number_of_roots_ref = TWO_SOLUTIONS,      .x1_ref = -4,       .x2_ref = -3},
+    {.a = 1,    .b = 11,   .c = 30,    .number_of_roots_ref = TWO_SOLUTIONS,      .x1_ref = -6,       .x2_ref = -5},
+    {.a = 0,    .b = 0,    .c = 6,     .number_of_roots_ref = NO_ROOTS,           .x1_ref = NAN,      .x2_ref = NAN},
+    {.a = 0,    .b = 5,    .c = 1,     .number_of_roots_ref = ONE_SOLUTION,       .x1_ref = -0.2,     .x2_ref = -0.2},
+    {.a = 0,    .b = 0,    .c = 0,     .number_of_roots_ref = ANY_ROOT,           .x1_ref = 0,        .x2_ref = 0},
+    {.a = 0,    .b = 0,    .c = 10,    .number_of_roots_ref = NO_ROOTS,           .x1_ref = NAN,      .x2_ref = NAN},
+};
 
-struct test_case test5 = {.a = 0,   .b = 0,    .c = 6,     .number_of_roots_ref = NO_ROOTS,           .x1_ref = NAN,      .x2_ref = NAN};
-struct test_case test6 = {.a = 0,   .b = 5,    .c = 1,     .number_of_roots_ref = ONE_SOLUTION,       .x1_ref = -0.2,     .x2_ref = NAN};
-struct test_case test7 = {.a = 0,   .b = 0,    .c = 0,     .number_of_roots_ref = ANY_ROOT,           .x1_ref = 0,        .x2_ref = 0};
-struct test_case test8 = {.a = 0,   .b = 0,    .c = 10,    .number_of_roots_ref = NO_ROOTS,           .x1_ref = NAN,      .x2_ref = NAN};
+struct test_case test_array_rand_real_roots[AMOUNT_OF_TESTS]    = {};
+struct test_case test_array_rand_complex_roots[AMOUNT_OF_TESTS] = {};
+struct test_case test_array_rand_linear_case[AMOUNT_OF_TESTS] = {};
 
 int main() {
     printf("Да здравствует MIPT.\nСовершим проверку ручных тестов.\n\n");
-    int amount_of_passed_tests = run_all_tests();
-
     int inprocess = 1;
     int mode      = 0;
 
@@ -25,6 +28,8 @@ int main() {
     double* ptr_root_1 = &root_1;
     double* ptr_root_2 = &root_2;
 
+    initialize_auto_tests_array();
+    int amount_of_passed_tests = run_all_tests();
     check_am_of_pt(amount_of_passed_tests, &inprocess);
 
     if (inprocess) { 
@@ -62,7 +67,7 @@ int validate_status(int status,
 
     else if (status == SUCCESS) {
         int number_of_roots = 0;
-        int equation_code = check_equation_type(coef_a, coef_b, coef_c);
+        int equation_code = check_equation_type(coef_a);
 
         if (equation_code == CODE_LINEAR)
             number_of_roots = solve_linear(coef_b, coef_c, ptr_root_1, ptr_root_2);
@@ -70,12 +75,13 @@ int validate_status(int status,
             number_of_roots = solve_quadratic(coef_a, coef_b, coef_c, ptr_root_1, ptr_root_2);
 
         result_output(number_of_roots, *ptr_root_1, *ptr_root_2);
+
     }
-    
+
     return 1;
 }
 
-int is_litera(char* ptr_buf, int position) {
+int is_litera(char* ptr_buf, size_t position) {
 
     assert(ptr_buf != NULL);
 
@@ -93,10 +99,12 @@ int is_litera(char* ptr_buf, int position) {
 int read_file(char* filename_buf, char* file_content, 
               double* coef_a, double* coef_b, double* coef_c, 
               double* ptr_root_1, double* ptr_root_2, 
-              int* inprocess, size_t file_content_size, size_t filename_buf_size) 
+              int* inprocess, int file_content_size, int filename_buf_size) 
 {
-    assert(filename_buf && file_content && 
-coef_a && coef_b && coef_c && ptr_root_1 && ptr_root_2 && inprocess);
+    assert((filename_buf != NULL)  &&  (file_content != NULL) && 
+           (coef_a != NULL)        &&  (coef_b != NULL)       && 
+           (coef_c != NULL)        &&  (ptr_root_1 != NULL)   && 
+           (ptr_root_2 != NULL)    &&  (inprocess != NULL));
 
     printf("Введите имя вашего файла (с .txt): ");
     char* ptr_filename = fgets(filename_buf, filename_buf_size, stdin);
@@ -116,7 +124,7 @@ coef_a && coef_b && coef_c && ptr_root_1 && ptr_root_2 && inprocess);
             char* ptr_file_content = fgets(file_content, file_content_size, file_pointer); // sizeof(file_content) / sizeof(*file_content)
 
             while (ptr_file_content != NULL) {
-                int len = strlen(ptr_file_content);
+                size_t len = strlen(ptr_file_content);
                 int status = check_input(ptr_file_content, len, coef_a, coef_b, coef_c);
 
                 *inprocess = validate_status(status, *coef_a, *coef_b, *coef_c, ptr_root_1, ptr_root_2);
@@ -127,7 +135,7 @@ coef_a && coef_b && coef_c && ptr_root_1 && ptr_root_2 && inprocess);
             printf("\nвы дошли до конца файла. Вы можете выйти или въебать название другого файла: ");
             fclose(file_pointer);
             
-            char* ptr_filename = fgets(filename_buf, filename_buf_size, stdin);
+            ptr_filename = fgets(filename_buf, filename_buf_size, stdin);
         }
     }
 
@@ -139,7 +147,10 @@ coef_a && coef_b && coef_c && ptr_root_1 && ptr_root_2 && inprocess);
 int work_cycle_of_program(double* coef_a, double* coef_b, double* coef_c, 
                           double* ptr_root_1, double* ptr_root_2, 
                           int* inprocess, int mode) {
- while (*inprocess) {
+    while (*inprocess) {
+
+        assert((coef_a != NULL)     &&  (coef_b  != NULL)     &&  (coef_c != NULL)  && 
+               (ptr_root_1 != NULL) &&  (ptr_root_2 != NULL)  &&  (inprocess != NULL));
 
         if (mode == 1) {
             char stdin_buf[DECENT] = {};
@@ -147,7 +158,7 @@ int work_cycle_of_program(double* coef_a, double* coef_b, double* coef_c,
             printf("\nВведите коэффициенты a, b, c: ");
             char* ptr_buf = fgets(stdin_buf, sizeof(stdin_buf) / sizeof(*stdin_buf), stdin);
 
-            int len = strlen(stdin_buf);
+            size_t len = strlen(stdin_buf);
             int status = check_input(ptr_buf, len, coef_a, coef_b, coef_c);
 
             *inprocess = validate_status(status, *coef_a, *coef_b, *coef_c, ptr_root_1, ptr_root_2);
@@ -157,24 +168,26 @@ int work_cycle_of_program(double* coef_a, double* coef_b, double* coef_c,
             char filename_buf[TINY]  = {};
             char file_content[SMALL] = {};
 
-            size_t filename_buf_size = sizeof(filename_buf) / sizeof(*filename_buf);
-            size_t file_content_size = sizeof(file_content) / sizeof(*file_content);
+            int filename_buf_size = sizeof(filename_buf) / sizeof(*filename_buf);
+            int file_content_size = sizeof(file_content) / sizeof(*file_content);
 
-            char* ptr_file_content;
+            // char* ptr_file_content;
             int status = read_file(filename_buf, file_content, 
                                    coef_a, coef_b, coef_c, 
                                    ptr_root_1, ptr_root_2, inprocess,
                                    file_content_size, filename_buf_size);
             if (status == EXIT) {
-                   return EXIT;
+                return EXIT;
             }
 
             return FILE_NOT_FOUND;
         }
     }
+
+    return 0; //посмотрим че будет
 }
 
-int check_equation_type(double coef_a, double coef_b, double coef_c) {
+int check_equation_type(double coef_a) {
     if (equal_to_zero_abs(coef_a))  {
         return CODE_LINEAR;
     }
@@ -206,7 +219,7 @@ int solve_linear(double coef_b, double coef_c, double* root_first, double* root_
 
     else {
         *root_first  = -coef_c/coef_b;
-        *root_second = NAN;
+        *root_second = *root_first;
 
         return ONE_SOLUTION;
     }

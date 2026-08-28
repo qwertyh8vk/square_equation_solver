@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include <math.h>
 #include <assert.h>
 #include <ctype.h>
@@ -48,24 +50,24 @@ enum array_sizes {
     DECENT = 4096,
 };
 
+enum rand_limits {
+    LIMIT_COEF_A  = 50,
+    LIMIT_ROOT    = 1000,
+    LIMIT_DISCR   = 1000,
+};
+
 struct test_case {
     double              a, b, c;
     int     number_of_roots_ref;
     double       x1_ref, x2_ref;
 };
 
-extern struct test_case test1;
-extern struct test_case test2;
-extern struct test_case test3;
-extern struct test_case test4;
+extern test_case test_array[AMOUNT_OF_TESTS]; // оказывается в экстерне стракт писать необязательно
+extern test_case test_array_rand_real_roots[AMOUNT_OF_TESTS]; // важно
+extern test_case test_array_rand_complex_roots[AMOUNT_OF_TESTS]; // тоже
+extern test_case test_array_rand_linear_case[AMOUNT_OF_TESTS];// бон аппетит комментарии
 
-extern struct test_case test5;
-extern struct test_case test6;
-extern struct test_case test7;
-extern struct test_case test8;
-
-
-int check_equation_type(double a, double b, double c);
+int check_equation_type(double a);
 int solve_linear(double b, double c, double* root_first, double* root_second);
 int solve_quadratic(double a, double b, double c, double* root_first, double* root_second);
 
@@ -73,7 +75,7 @@ void result_output(int solver_result, double root_1, double root_2);
 
 int equal_to_zero_abs(double dbl);
 int more_than_zero(double dbl);
-int is_litera(char* ptr_buf, int position);
+int is_litera(char* ptr_buf, size_t position);
 int validate_status(int status,
                     double a, double b, double c, 
                     double* ptr_root_1, double* ptr_root_2);
@@ -81,7 +83,7 @@ int validate_status(int status,
 int read_file(char* filename_buf, char* file_content, 
               double* coef_a, double* coef_b, double* coef_c, 
               double* ptr_root_1, double* ptr_root_2, 
-              int* inprocess, size_t file_content_size, size_t filename_buf_size);
+              int* inprocess, int file_content_size, int filename_buf_size);
 
 int work_cycle_of_program(double* coef_a, double* coef_b, double* coef_c, 
                           double* ptr_root_1, double* ptr_root_2, 
