@@ -3,22 +3,22 @@
 #include "tests.h"
 
 struct test_case test_array[AMOUNT_OF_TESTS] = { 
-    {.a = 1,    .b = 5,    .c = 7,     .number_of_roots_ref = NEGATIVE_PENALTY,   .x1_ref = NAN,      .x2_ref = NAN},
-    {.a = 1,    .b = 8,    .c = 16,    .number_of_roots_ref = ONE_SOLUTION,       .x1_ref = -4,       .x2_ref = NAN},
-    {.a = 1,    .b = 7,    .c = 12,    .number_of_roots_ref = TWO_SOLUTIONS,      .x1_ref = -4,       .x2_ref = -3},
-    {.a = 1,    .b = 11,   .c = 30,    .number_of_roots_ref = TWO_SOLUTIONS,      .x1_ref = -6,       .x2_ref = -5},
-    {.a = 0,    .b = 0,    .c = 6,     .number_of_roots_ref = NO_ROOTS,           .x1_ref = NAN,      .x2_ref = NAN},
-    {.a = 0,    .b = 5,    .c = 1,     .number_of_roots_ref = ONE_SOLUTION,       .x1_ref = -0.2,     .x2_ref = -0.2},
-    {.a = 0,    .b = 0,    .c = 0,     .number_of_roots_ref = ANY_ROOT,           .x1_ref = 0,        .x2_ref = 0},
-    {.a = 0,    .b = 0,    .c = 10,    .number_of_roots_ref = NO_ROOTS,           .x1_ref = NAN,      .x2_ref = NAN},
+    {.coef_a = 1,    .coef_b = 5,    .coef_c = 7,     .number_of_roots_ref = NEGATIVE_PENALTY,   .x1_ref = NAN,      .x2_ref = NAN},
+    {.coef_a = 1,    .coef_b = 8,    .coef_c = 16,    .number_of_roots_ref = ONE_SOLUTION,       .x1_ref = -4,       .x2_ref = -4},
+    {.coef_a = 1,    .coef_b = 7,    .coef_c = 12,    .number_of_roots_ref = TWO_SOLUTIONS,      .x1_ref = -4,       .x2_ref = -3},
+    {.coef_a = 1,    .coef_b = 11,   .coef_c = 30,    .number_of_roots_ref = TWO_SOLUTIONS,      .x1_ref = -6,       .x2_ref = -5},
+    {.coef_a = 0,    .coef_b = 0,    .coef_c = 6,     .number_of_roots_ref = NO_ROOTS,           .x1_ref = NAN,      .x2_ref = NAN},
+    {.coef_a = 0,    .coef_b = 5,    .coef_c = 1,     .number_of_roots_ref = ONE_SOLUTION,       .x1_ref = -0.2,     .x2_ref = -0.2},
+    {.coef_a = 0,    .coef_b = 0,    .coef_c = 0,     .number_of_roots_ref = ANY_ROOT,           .x1_ref = 0,        .x2_ref = 0},
+    {.coef_a = 0,    .coef_b = 0,    .coef_c = 10,    .number_of_roots_ref = NO_ROOTS,           .x1_ref = NAN,      .x2_ref = NAN},
 };
 
 struct test_case test_array_rand_real_roots[AMOUNT_OF_TESTS]    = {};
 struct test_case test_array_rand_complex_roots[AMOUNT_OF_TESTS] = {};
-struct test_case test_array_rand_linear_case[AMOUNT_OF_TESTS] = {};
+struct test_case test_array_rand_linear_case[AMOUNT_OF_TESTS]   = {};
 
 int main() {
-    printf("Да здравствует MIPT.\nСовершим проверку ручных тестов.\n\n");
+    printf("Да здравствует МФТИ.\nСовершим проверку ручных и автоматических тестов.\n\n");
     int inprocess = 1;
     int mode      = 0;
 
@@ -28,12 +28,12 @@ int main() {
     double* ptr_root_1 = &root_1;
     double* ptr_root_2 = &root_2;
 
-    initialize_auto_tests_array();
+    initialize_auto_tests_structs_array();
     int amount_of_passed_tests = run_all_tests();
-    check_am_of_pt(amount_of_passed_tests, &inprocess);
+    check_num_of_passed_tests(amount_of_passed_tests, &inprocess);
 
     if (inprocess) { 
-        mode = selectmode();
+        mode = select_mode();
         printf("Решала квадратных уравнений. Чтобы выйти, нажмите Q (q)\n");
     }
 
@@ -60,7 +60,7 @@ int validate_status(int status,
     }
 
     else if (status == USER_SUSPENDED) {
-        printf("пользователь написал ctrl+d. Выход из программы нахуй...");
+        printf("Пользователь ввёл ctrl+d. Выход из программы н***й...");
 
         return 0;
     }
@@ -69,10 +69,13 @@ int validate_status(int status,
         int number_of_roots = 0;
         int equation_code = check_equation_type(coef_a);
 
-        if (equation_code == CODE_LINEAR)
+        if (equation_code == CODE_LINEAR) {
             number_of_roots = solve_linear(coef_b, coef_c, ptr_root_1, ptr_root_2);
-        else 
+        }
+
+        else {
             number_of_roots = solve_quadratic(coef_a, coef_b, coef_c, ptr_root_1, ptr_root_2);
+        }
 
         result_output(number_of_roots, *ptr_root_1, *ptr_root_2);
 
@@ -80,21 +83,6 @@ int validate_status(int status,
 
     return 1;
 }
-
-int is_litera(char* ptr_buf, size_t position) {
-
-    assert(ptr_buf != NULL);
-
-    if (!isdigit(ptr_buf[position])
-    && (ptr_buf[position] != ' ')  && (ptr_buf[position] != ',') 
-    && (ptr_buf[position] != '\n') && (ptr_buf[position] != '.') 
-    && (ptr_buf[position] != '-')  && (ptr_buf[position] != '+'))
-    
-        return true;
-
-    return false;
-}
-
 
 int read_file(char* filename_buf, char* file_content, 
               double* coef_a, double* coef_b, double* coef_c, 
@@ -109,19 +97,15 @@ int read_file(char* filename_buf, char* file_content,
     printf("Введите имя вашего файла (с .txt): ");
     char* ptr_filename = fgets(filename_buf, filename_buf_size, stdin);
 
-    while(ptr_filename[0] != 'q') {
+    while((ptr_filename[0] != 'q') && (ptr_filename[0] != 'Q')) {
 
         ptr_filename[strlen(ptr_filename) - 1] = '\0';
         FILE* file_pointer = fopen(ptr_filename, "r");
 
-        if (file_pointer == NULL) {
-            printf("указанный файл не найден.\nThat's why we leaving нахуй из программы.\n");
+        if (file_pointer != NULL) {
+            printf("Указанный файл не найден.\nВведите название считываемого файла (или q/Q'шку):");
 
-            return FILE_NOT_FOUND;
-        }
-
-        else {
-            char* ptr_file_content = fgets(file_content, file_content_size, file_pointer); // sizeof(file_content) / sizeof(*file_content)
+            char* ptr_file_content = fgets(file_content, file_content_size, file_pointer); // sizeof(file_content) / sizeof(*file_content) не получится
 
             while (ptr_file_content != NULL) {
                 size_t len = strlen(ptr_file_content);
@@ -132,14 +116,18 @@ int read_file(char* filename_buf, char* file_content,
                 ptr_file_content = fgets(file_content, file_content_size, file_pointer);
             }
 
-            printf("\nвы дошли до конца файла. Вы можете выйти или въебать название другого файла: ");
+            printf("\nВы дошли до конца файла. Вы можете выйти или вписать название другого файла: ");
             fclose(file_pointer);
-            
-            ptr_filename = fgets(filename_buf, filename_buf_size, stdin);
         }
+        
+        else {
+            printf("Указанный файл не найден.\nВведите название считываемого файла (или кушку):"); 
+        }
+
+        ptr_filename = fgets(filename_buf, filename_buf_size, stdin);
     }
 
-    printf("пользователь ввёл q, поэтому мы выходим из программы нахуй.\n");
+    printf("Пользователь ввёл q, поэтому мы выходим из программы н***й.\n");
     return EXIT;
 }
 
@@ -147,12 +135,12 @@ int read_file(char* filename_buf, char* file_content,
 int work_cycle_of_program(double* coef_a, double* coef_b, double* coef_c, 
                           double* ptr_root_1, double* ptr_root_2, 
                           int* inprocess, int mode) {
-    while (*inprocess) {
+    while (*inprocess)  {
 
         assert((coef_a != NULL)     &&  (coef_b  != NULL)     &&  (coef_c != NULL)  && 
                (ptr_root_1 != NULL) &&  (ptr_root_2 != NULL)  &&  (inprocess != NULL));
 
-        if (mode == 1) {
+        if (mode == FROM_KEYBOARD) {
             char stdin_buf[DECENT] = {};
 
             printf("\nВведите коэффициенты a, b, c: ");
@@ -171,7 +159,6 @@ int work_cycle_of_program(double* coef_a, double* coef_b, double* coef_c,
             int filename_buf_size = sizeof(filename_buf) / sizeof(*filename_buf);
             int file_content_size = sizeof(file_content) / sizeof(*file_content);
 
-            // char* ptr_file_content;
             int status = read_file(filename_buf, file_content, 
                                    coef_a, coef_b, coef_c, 
                                    ptr_root_1, ptr_root_2, inprocess,
@@ -180,17 +167,18 @@ int work_cycle_of_program(double* coef_a, double* coef_b, double* coef_c,
                 return EXIT;
             }
 
-            return FILE_NOT_FOUND;
+            // return FILE_NOT_FOUND; // нет смысла в этом ретурне, поскоку в read file он не обрабатывается
         }
     }
 
-    return 0; //посмотрим че будет
+    return 0;
 }
 
 int check_equation_type(double coef_a) {
     if (equal_to_zero_abs(coef_a))  {
         return CODE_LINEAR;
     }
+
     else {
         return CODE_QUADRATIC;
     }
@@ -235,7 +223,7 @@ int solve_quadratic(double coef_a, double coef_b, double coef_c, double* root_fi
 
         double sqrt_discr = sqrt(discriminant);
 
-        if (coef_a < 0) {
+        if (less_than_zero(coef_a)) {
             *root_first  = (-coef_b + sqrt_discr)/(2*coef_a);
             *root_second = (-coef_b - sqrt_discr)/(2*coef_a);
         }
@@ -250,7 +238,7 @@ int solve_quadratic(double coef_a, double coef_b, double coef_c, double* root_fi
 
     else if (equal_to_zero_abs(discriminant)) {
         *root_first  = -coef_b/(2*coef_a);
-        *root_second = NAN;
+        *root_second = *root_first;
 
         return ONE_SOLUTION;
     }
@@ -274,6 +262,15 @@ int equal_to_zero_abs(double double_num) {
 
 int more_than_zero(double double_num) {
     if ((double_num - 0) > NEIGHBOURHOOD) {
+
+        return true;
+    }
+
+    return false;
+}
+
+int less_than_zero(double double_num) {
+    if ((double_num - 0) < NEIGHBOURHOOD) {
 
         return true;
     }
@@ -310,7 +307,7 @@ void result_output(int number_of_roots, double root_1, double root_2) {
     }
 }
 
-int selectmode() {
+int select_mode() {
     printf("Вы хотите вводить коэффициенты с клавиатуры (stdin) или у вас есть файл?\n"
            "stdin - 1, а чтение с файла - 2: ");
 
@@ -322,21 +319,21 @@ int selectmode() {
         if (ptr_selected[2] == '\0') {
             if (ptr_selected[0] == '1') {
 
-                return 1;
+                return FROM_KEYBOARD;
             }
             
             else if (ptr_selected[0] == '2') {
 
-                return 2;
+                return FROM_FILE;
             }
 
             else {
-                printf("неккоректный ввод! введите ровно один символ (1) или (2) и нажмите Enter. ");
+                printf("неккоректный ввод! Введите ровно один символ (1) или (2) и нажмите Enter. ");
             }
         }   
 
         else {
-            printf("неккоректный ввод! введите ровно один символ (1) или (2) и нажмите Enter. ");
+            printf("неккоректный ввод! Введите ровно один символ (1) или (2) и нажмите Enter. ");
         }
     }
 }

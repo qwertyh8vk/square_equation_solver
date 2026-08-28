@@ -1,7 +1,19 @@
-
-// #include "check_input.h"
 #include "square_solver.h"
 #include "check_input.h"
+
+int is_litera(char* ptr_buf, size_t position) {
+
+    assert(ptr_buf != NULL);
+
+    if (!isdigit(ptr_buf[position])
+    && (ptr_buf[position] != ' ')  && (ptr_buf[position] != ',') 
+    && (ptr_buf[position] != '\n') && (ptr_buf[position] != '.') 
+    && (ptr_buf[position] != '-')  && (ptr_buf[position] != '+'))
+    
+        return true;
+
+    return false;
+}
 
 void totalling_num(int after_dot_index, double multiplier, size_t position, 
                    double* num_total, double* divider, 
@@ -49,7 +61,7 @@ int analyze_after_space_or_comma(char* ptr_buf, size_t* position, int* after_dot
 
         else if (ptr_buf[*position] == '.') {
             *after_dot_index = 1;
-            *position +=1;
+            *position += 1;
         }
 
         else {
@@ -61,7 +73,7 @@ int analyze_after_space_or_comma(char* ptr_buf, size_t* position, int* after_dot
     *if_me_in_num = 1;
     *counter_of_read_digits += 1;
 
-    return 0;
+    return 0; // абсолютно необязателен, поскоку я его нигде не сохраняю.
 }
 
 int check_input(char* ptr_buf, size_t len, double* coef_a, double* coef_b, double* coef_c) {
@@ -76,6 +88,8 @@ int check_input(char* ptr_buf, size_t len, double* coef_a, double* coef_b, doubl
     int real_number_of_coeffs[3] = {0};
     int counter_of_read_digits   = 0;
 
+    size_t i = 0;
+
     int if_me_in_num = 0;
     int dots_counter = 0;
 
@@ -89,14 +103,14 @@ int check_input(char* ptr_buf, size_t len, double* coef_a, double* coef_b, doubl
         int sign = 1;
         int operations_counter = 0;
 
-        for (size_t i = 0; i < len; i++) {
+        for (i; i < len; i++) {
 
             if (ptr_buf[i] == 'q' || ptr_buf[i] == 'Q')  {
 
                 return EXIT;
             }
 
-            else if (is_litera(ptr_buf, i) ) {
+            else if (is_litera(ptr_buf, i)) {
                 printf("Неккоректный ввод!\n");
 
                 return INCORRECT_INPUT;
@@ -137,7 +151,7 @@ int check_input(char* ptr_buf, size_t len, double* coef_a, double* coef_b, doubl
                 }
 
                 else if (if_me_in_num && dots_counter > 1) {
-                    printf("если эта ошибка прокнула, вы точно еблан.\n");
+                    printf("если эта ошибка прокнула, вы точно дебагер)).\n");
                     
                     return INCORRECT_INPUT;
                 }
@@ -155,10 +169,10 @@ int check_input(char* ptr_buf, size_t len, double* coef_a, double* coef_b, doubl
                               &operations_counter, ptr_buf);
             }
 
-
             else if ((ptr_buf[i] == ' ' || ptr_buf[i] == ',') && counter_of_read_digits != 0) {
                 if_me_in_num = 0;
                 dots_counter = 0;
+                
                 if(isdigit(ptr_buf[i-1])) {
                     i++;
                     after_dot_index = 0;
@@ -182,7 +196,7 @@ int check_input(char* ptr_buf, size_t len, double* coef_a, double* coef_b, doubl
     *coef_b = res_buf[1];
     *coef_c = res_buf[2];
 
-    printf("что происходит: %lf %lf %lf\n\n", res_buf[0], res_buf[1], res_buf[2]);
+    printf("\nЯ думаю, вы имели в виду: a: %.7f b: %.7f c: %.7f\n", res_buf[0], res_buf[1], res_buf[2]); // отладочный
 
     for (int l = 0; l < 3; l++) {
         if (real_number_of_coeffs[l] == 0) {

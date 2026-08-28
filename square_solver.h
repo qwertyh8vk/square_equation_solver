@@ -7,6 +7,8 @@
 #include <string.h>
 #include <stdbool.h>
 
+#define OK 0
+
 #define NEIGHBOURHOOD 1e-5
 
 #define COEFF_AMOUNT 3
@@ -17,6 +19,11 @@
 #define GREEN  "\033[32m"
 #define BLUE   "\033[34m"
 #define RESET  "\033[0m"
+
+enum modes {
+    FROM_KEYBOARD = 1,
+    FROM_FILE     = 2,
+};
 
 enum test_consts {
     TEST_PASSED      = 1,
@@ -52,32 +59,35 @@ enum array_sizes {
 
 enum rand_limits {
     LIMIT_COEF_A  = 50,
+    LIMIT_COEF_B  = 100,
+    LIMIT_COEF_C  = 50,
     LIMIT_ROOT    = 1000,
     LIMIT_DISCR   = 1000,
 };
 
 struct test_case {
-    double              a, b, c;
+    double              coef_a, coef_b, coef_c;
     int     number_of_roots_ref;
     double       x1_ref, x2_ref;
 };
 
-extern test_case test_array[AMOUNT_OF_TESTS]; // оказывается в экстерне стракт писать необязательно
-extern test_case test_array_rand_real_roots[AMOUNT_OF_TESTS]; // важно
-extern test_case test_array_rand_complex_roots[AMOUNT_OF_TESTS]; // тоже
-extern test_case test_array_rand_linear_case[AMOUNT_OF_TESTS];// бон аппетит комментарии
+extern test_case test_array[AMOUNT_OF_TESTS];
+extern test_case test_array_rand_real_roots[AMOUNT_OF_TESTS];
+extern test_case test_array_rand_complex_roots[AMOUNT_OF_TESTS];
+extern test_case test_array_rand_linear_case[AMOUNT_OF_TESTS];
 
-int check_equation_type(double a);
-int solve_linear(double b, double c, double* root_first, double* root_second);
-int solve_quadratic(double a, double b, double c, double* root_first, double* root_second);
+int check_equation_type(double coef_a);
+int solve_linear(double coef_b, double coef_c, double* root_first, double* root_second);
+int solve_quadratic(double coef_a, double coef_b, double coef_c, double* root_first, double* root_second);
 
 void result_output(int solver_result, double root_1, double root_2);
 
 int equal_to_zero_abs(double dbl);
 int more_than_zero(double dbl);
-int is_litera(char* ptr_buf, size_t position);
+int less_than_zero(double double_num);
+
 int validate_status(int status,
-                    double a, double b, double c, 
+                    double coef_a, double coef_b, double coef_c, 
                     double* ptr_root_1, double* ptr_root_2);
 
 int read_file(char* filename_buf, char* file_content, 
@@ -89,4 +99,4 @@ int work_cycle_of_program(double* coef_a, double* coef_b, double* coef_c,
                           double* ptr_root_1, double* ptr_root_2, 
                           int* inprocess, int mode);
 
-int selectmode();
+int select_mode();
