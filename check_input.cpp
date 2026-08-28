@@ -1,8 +1,9 @@
 
-#include "check_input.h"
+// #include "check_input.h"
 #include "square_solver.h"
+#include "check_input.h"
 
-void totalling_num(int after_dot_index, int multiplier, int position, 
+void totalling_num(int after_dot_index, double multiplier, size_t position, 
                    double* num_total, double* divider, 
                    int* operations_counter, char* ptr_buf) 
 {
@@ -22,7 +23,7 @@ void totalling_num(int after_dot_index, int multiplier, int position,
     
 }
 
-int analyze_after_space_or_comma(char* ptr_buf, int* position, int* after_dot_index, 
+int analyze_after_space_or_comma(char* ptr_buf, size_t* position, int* after_dot_index, 
                                  int* sign, int* counter_of_read_digits, int* if_me_in_num) {
     
     assert((ptr_buf != NULL)  &&  (position != NULL)                &&  (after_dot_index != NULL) && 
@@ -35,7 +36,7 @@ int analyze_after_space_or_comma(char* ptr_buf, int* position, int* after_dot_in
             *after_dot_index = 0;
         }
 
-        else if(ptr_buf[*position] == '-' || ptr_buf[*position] == '+') {
+        else if (ptr_buf[*position] == '-' || ptr_buf[*position] == '+') {
             if (ptr_buf[*position] == '-')
                 *sign *= -1;
 
@@ -59,9 +60,11 @@ int analyze_after_space_or_comma(char* ptr_buf, int* position, int* after_dot_in
     }
     *if_me_in_num = 1;
     *counter_of_read_digits += 1;
+
+    return 0;
 }
 
-int check_input(char* ptr_buf, int len, double* coef_a, double* coef_b, double* coef_c) {
+int check_input(char* ptr_buf, size_t len, double* coef_a, double* coef_b, double* coef_c) {
 
     assert((ptr_buf != NULL) && (coef_a != NULL) && (coef_b != NULL) && (coef_c != NULL));
 
@@ -69,8 +72,6 @@ int check_input(char* ptr_buf, int len, double* coef_a, double* coef_b, double* 
         return USER_SUSPENDED;
     }
                                                                                                                                                                                                 
-    int i = 0;
-
     int after_dot_index          = 0;
     int real_number_of_coeffs[3] = {0};
     int counter_of_read_digits   = 0;
@@ -88,7 +89,7 @@ int check_input(char* ptr_buf, int len, double* coef_a, double* coef_b, double* 
         int sign = 1;
         int operations_counter = 0;
 
-        for (i; i < len; i++) {
+        for (size_t i = 0; i < len; i++) {
 
             if (ptr_buf[i] == 'q' || ptr_buf[i] == 'Q')  {
 
@@ -155,7 +156,7 @@ int check_input(char* ptr_buf, int len, double* coef_a, double* coef_b, double* 
             }
 
 
-            else if (ptr_buf[i] == ' ' || ptr_buf[i] == ',' && counter_of_read_digits != 0) {
+            else if ((ptr_buf[i] == ' ' || ptr_buf[i] == ',') && counter_of_read_digits != 0) {
                 if_me_in_num = 0;
                 dots_counter = 0;
                 if(isdigit(ptr_buf[i-1])) {
