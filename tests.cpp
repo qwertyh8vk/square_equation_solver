@@ -35,7 +35,7 @@ int run_one_test(struct test_case test, int number) {
         || (compare_including_nans(x1, test.x1_ref) == 0) 
         || (compare_including_nans(x2, test.x2_ref) == 0)) 
     {
-        printf(RED "TEST %d FAILED!\na = %lg, b = %lg, c = %lg"
+        printf_slow(RED "TEST %d FAILED!\na = %lg, b = %lg, c = %lg"
                    "\nexpected amount of roots: %d"
                    "\nexpected roots: x1_ref = %lg, x2_ref = %lg"
                    "\ncalculated amount of roots: %d"
@@ -47,7 +47,7 @@ int run_one_test(struct test_case test, int number) {
     }
 
     else {
-        printf(GREEN "TEST %d WAS PASSED SUCCESFULLY.\n" RESET, (number+1));
+        printf_slow(GREEN "TEST %d WAS PASSED SUCCESFULLY.\n" RESET, (number+1));
 
         return TEST_PASSED;
     } 
@@ -57,16 +57,16 @@ int run_all_tests() {
 
     int amount_of_passed_tests = 0;
 
-    printf("\nDoing manual tests.\n\n");
+    printf_slow("\nDoing manual tests.\n\n");
     amount_of_passed_tests += count_passed_tests(test_array);
 
-    printf("\nTesting real roots equations.\n\n");
+    printf_slow("\nTesting real roots equations.\n\n");
     amount_of_passed_tests += count_passed_tests(test_array_rand_real_roots);
 
-    printf("\nTesting complex roots equations.\n\n");
+    printf_slow("\nTesting complex roots equations.\n\n");
     amount_of_passed_tests += count_passed_tests(test_array_rand_complex_roots);
 
-    printf("\nTesting linear equations\n\n");
+    printf_slow("\nTesting linear equations\n\n");
     amount_of_passed_tests += count_passed_tests(test_array_rand_linear_case);
 
     return amount_of_passed_tests;
@@ -224,7 +224,7 @@ void check_num_of_passed_tests(int amount_of_passed_tests, int* inprocess) {
     assert(inprocess != NULL);
 
     if (amount_of_passed_tests != 4 * AMOUNT_OF_TESTS) {
-        printf("\nПрограмма прошла НЕ ВСЕ тесты. (%d из %d)"
+        printf_slow("\nПрограмма прошла НЕ ВСЕ тесты. (%d из %d)"
                "\nВы уверены, что хотите пользоваться этой х***ей,"
                "\nкоторая медленная, да ещё и решает неправильно? ", amount_of_passed_tests, 4 * AMOUNT_OF_TESTS);
 
@@ -233,23 +233,23 @@ void check_num_of_passed_tests(int amount_of_passed_tests, int* inprocess) {
             char* ptr_check_ans = fgets(check_answer, sizeof(check_answer) / sizeof(*check_answer), stdin);
 
             if (ptr_check_ans[0] == 'Y' || ptr_check_ans[0] == 'y') {
-                printf("Делайте домашку с этой х***ей на свой страх и риск.\n");
+                printf_slow("Делайте домашку с этой х***ей на свой страх и риск.\n");
 
                 break;
             }
             else if (ptr_check_ans[0] == 'N' || ptr_check_ans[0] == 'n') {
-                printf("Правильное решение.\n");
+                printf_slow("Правильное решение.\n");
                 *inprocess = 0;
 
                 break;
             }
             else {
-                printf("Ну сказали же, Y или N!\nЖду ваш ответ в корректном виде: ");
+                printf_slow("Ну сказали же, Y или N!\nЖду ваш ответ в корректном виде: ");
             }
         }
     }
 
     else {
-        printf("\nВсе тесты пройдены успешно. Фотомафу можно доверять.\n");
+        printf_slow("\nВсе тесты пройдены успешно. Фотомафу можно доверять.\n");
     }
 }

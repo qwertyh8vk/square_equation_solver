@@ -2,6 +2,9 @@
 #include "check_input.h"
 #include "tests.h"
 
+// g++ graphics.cpp -o graphics $(pkg-config --cflags --libs raylib) для себя шоб не забыть как компилить графику с рэйлибом
+// flags: -s = WITHOUT TESTS, -t = only TESTS, -h = help flag, 2printf'a, return 0
+
 struct test_case test_array[AMOUNT_OF_TESTS] = { 
     {.coef_a = 1,    .coef_b = 5,    .coef_c = 7,     .number_of_roots_ref = NEGATIVE_PENALTY,   .x1_ref = NAN,      .x2_ref = NAN},
     {.coef_a = 1,    .coef_b = 8,    .coef_c = 16,    .number_of_roots_ref = ONE_SOLUTION,       .x1_ref = -4,       .x2_ref = -4},
@@ -18,7 +21,15 @@ struct test_case test_array_rand_complex_roots[AMOUNT_OF_TESTS] = {};
 struct test_case test_array_rand_linear_case[AMOUNT_OF_TESTS]   = {};
 
 int main() {
-    printf("Да здравствует МФТИ.\nСовершим проверку ручных и автоматических тестов.\n\n");
+    
+    // char* loh = "egor";
+    // printf("%s", loh);
+    // *(loh + 1) = 'p';
+    // // printf("egor");
+
+    printf_slow("Да здравствует МФТИ.\nСовершим проверку ручных и автоматических тестов.\n\n");
+    printf_slow("до скайнета осталось 30 секунд. тебе пиздец\n");
+
     int inprocess = 1;
     int mode      = 0;
 
@@ -34,18 +45,45 @@ int main() {
 
     if (inprocess) { 
         mode = select_mode();
-        printf("Решала квадратных уравнений. Чтобы выйти, нажмите Q (q)\n");
+        printf_slow("Решала квадратных уравнений. Чтобы выйти, нажмите Q (q)\n");
     }
 
     work_cycle_of_program(&coef_a, &coef_b, &coef_c, 
                           ptr_root_1, ptr_root_2, 
                           &inprocess, mode);
 
-    printf("\nРабота программы успешно завершена.\n");
+    printf_slow("\nРабота программы успешно завершена.\n");
+
+    // "egor"
+
+    // print("egor")
+
+    // char* loh = "egor"
+    // printf("%s", loh)
+    // loh[0] = 'p'
+    // printf("egor")
     
     return 0;
 }
 
+void printf_slow(const char* format_string, ...) {
+    char string_buffer[DECENT] = {};
+
+    va_list ptr_on_unnessesary;
+    va_start(ptr_on_unnessesary, format_string);
+
+    vsnprintf(string_buffer, sizeof(string_buffer) / sizeof(*string_buffer), format_string, ptr_on_unnessesary);
+
+    size_t string_buf_len = strnlen(string_buffer, sizeof(string_buffer) / sizeof(*string_buffer));
+
+    va_end(ptr_on_unnessesary);
+    for (size_t i = 0; i < string_buf_len; i++) {
+        char symbol = string_buffer[i];
+        putc(symbol, stdout);
+        fflush(stdout);
+        usleep(TIMING);
+    }
+}
 
 int validate_status(int status, 
                     double coef_a, double coef_b, double coef_c, 
@@ -54,13 +92,13 @@ int validate_status(int status,
     assert((ptr_root_1 != NULL) && (ptr_root_2 != NULL));
 
     if (status == EXIT) {
-        printf("Первым элементов вы ввели q.\nОсуществляю выход из программы...\n");
+        printf_slow("Первым элементов вы ввели q.\nОсуществляю выход из программы...\n");
 
         return 0;
     }
 
     else if (status == USER_SUSPENDED) {
-        printf("Пользователь ввёл ctrl+d. Выход из программы н***й...");
+        printf_slow("Пользователь ввёл ctrl+d. Выход из программы н***й...");
 
         return 0;
     }
@@ -94,7 +132,7 @@ int read_file(char* filename_buf, char* file_content,
            (coef_c != NULL)        &&  (ptr_root_1 != NULL)   && 
            (ptr_root_2 != NULL)    &&  (inprocess != NULL));
 
-    printf("Введите имя вашего файла (с .txt): ");
+    printf_slow("Введите имя вашего файла (с .txt): ");
     char* ptr_filename = fgets(filename_buf, filename_buf_size, stdin);
 
     while((ptr_filename[0] != 'q') && (ptr_filename[0] != 'Q')) {
@@ -103,7 +141,7 @@ int read_file(char* filename_buf, char* file_content,
         FILE* file_pointer = fopen(ptr_filename, "r");
 
         if (file_pointer != NULL) {
-            printf("Указанный файл не найден.\nВведите название считываемого файла (или q/Q'шку):");
+            printf_slow("Указанный файл не найден.\nВведите название считываемого файла (или q/Q'шку):");
 
             char* ptr_file_content = fgets(file_content, file_content_size, file_pointer); // sizeof(file_content) / sizeof(*file_content) не получится
 
@@ -116,18 +154,18 @@ int read_file(char* filename_buf, char* file_content,
                 ptr_file_content = fgets(file_content, file_content_size, file_pointer);
             }
 
-            printf("\nВы дошли до конца файла. Вы можете выйти или вписать название другого файла: ");
+            printf_slow("\nВы дошли до конца файла. Вы можете выйти или вписать название другого файла: ");
             fclose(file_pointer);
         }
         
         else {
-            printf("Указанный файл не найден.\nВведите название считываемого файла (или кушку):"); 
+            printf_slow("Указанный файл не найден.\nВведите название считываемого файла (или кушку):"); 
         }
 
         ptr_filename = fgets(filename_buf, filename_buf_size, stdin);
     }
 
-    printf("Пользователь ввёл q, поэтому мы выходим из программы н***й.\n");
+    printf_slow("Пользователь ввёл q, поэтому мы выходим из программы н***й.\n");
     return EXIT;
 }
 
@@ -143,7 +181,7 @@ int work_cycle_of_program(double* coef_a, double* coef_b, double* coef_c,
         if (mode == FROM_KEYBOARD) {
             char stdin_buf[DECENT] = {};
 
-            printf("\nВведите коэффициенты a, b, c: ");
+            printf_slow("\nВведите коэффициенты a, b, c: ");
             char* ptr_buf = fgets(stdin_buf, sizeof(stdin_buf) / sizeof(*stdin_buf), stdin);
 
             size_t len = strlen(stdin_buf);
@@ -282,23 +320,23 @@ void result_output(int number_of_roots, double root_1, double root_2) {
     switch (number_of_roots) {
 
         case ANY_ROOT:
-            printf("Выражение вида 0 = 0.\nЛюбой x является решением.\n");
+            printf_slow("Выражение вида 0 = 0.\nЛюбой x является решением.\n");
             break;
 
         case NO_ROOTS:
-            printf("Корней нет.\n");
+            printf_slow("Корней нет.\n");
             break;
 
         case NEGATIVE_PENALTY:
-            printf("Дискриминант получился отрицательным.\nРешений в действительных числах нет.\n");
+            printf_slow("Дискриминант получился отрицательным.\nРешений в действительных числах нет.\n");
             break;
 
         case ONE_SOLUTION:
-            printf("Единстенное решение x = %.2lf\n", root_1);
+            printf_slow("Единстенное решение x = %.2lf\n", root_1);
             break;
 
         case TWO_SOLUTIONS:
-            printf("Два решения:\nx1 = %.2lf\nx2 = %.2lf\n", root_1, root_2);
+            printf_slow("Два решения:\nx1 = %.2lf\nx2 = %.2lf\n", root_1, root_2);
             break;
 
         default:
@@ -308,7 +346,7 @@ void result_output(int number_of_roots, double root_1, double root_2) {
 }
 
 int select_mode() {
-    printf("Вы хотите вводить коэффициенты с клавиатуры (stdin) или у вас есть файл?\n"
+    printf_slow("Вы хотите вводить коэффициенты с клавиатуры (stdin) или у вас есть файл?\n"
            "stdin - 1, а чтение с файла - 2: ");
 
     char selected_mode[16];
@@ -328,12 +366,14 @@ int select_mode() {
             }
 
             else {
-                printf("неккоректный ввод! Введите ровно один символ (1) или (2) и нажмите Enter. ");
+                printf_slow("неккоректный ввод! Введите ровно один символ (1) или (2) и нажмите Enter. ");
             }
         }   
 
         else {
-            printf("неккоректный ввод! Введите ровно один символ (1) или (2) и нажмите Enter. ");
+            printf_slow("неккоректный ввод! Введите ровно один символ (1) или (2) и нажмите Enter. ");
         }
     }
 }
+
+// printf_hv() -> sprintf() ; посимвольно putchar -> fflush(stdout) -> time sleep. 1-я версия

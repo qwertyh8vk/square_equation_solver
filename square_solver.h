@@ -7,6 +7,9 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include <stdarg.h>
+#include <unistd.h>
+
 #define OK 0
 
 #define NEIGHBOURHOOD 1e-5
@@ -14,6 +17,8 @@
 #define COEFF_AMOUNT 3
 
 #define USER_SUSPENDED 501
+
+#define TIMING 0
 
 #define RED    "\033[31m"
 #define GREEN  "\033[32m"
@@ -75,6 +80,8 @@ extern test_case test_array[AMOUNT_OF_TESTS];
 extern test_case test_array_rand_real_roots[AMOUNT_OF_TESTS];
 extern test_case test_array_rand_complex_roots[AMOUNT_OF_TESTS];
 extern test_case test_array_rand_linear_case[AMOUNT_OF_TESTS];
+
+void printf_slow(const char* format_string, ...);
 
 int check_equation_type(double coef_a);
 int solve_linear(double coef_b, double coef_c, double* root_first, double* root_second);

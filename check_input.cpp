@@ -65,7 +65,7 @@ int analyze_after_space_or_comma(char* ptr_buf, size_t* position, int* after_dot
         }
 
         else {
-            printf("\nНеккоректный ввод!, %d ,Жесткий тип\n", ptr_buf[*position]);
+            printf_slow("\nНеккоректный ввод!, %d ,Жесткий тип\n", ptr_buf[*position]);
 
             return INCORRECT_INPUT;
         }
@@ -75,6 +75,8 @@ int analyze_after_space_or_comma(char* ptr_buf, size_t* position, int* after_dot
 
     return 0; // абсолютно необязателен, поскоку я его нигде не сохраняю.
 }
+
+// strtod
 
 int check_input(char* ptr_buf, size_t len, double* coef_a, double* coef_b, double* coef_c) {
 
@@ -111,14 +113,14 @@ int check_input(char* ptr_buf, size_t len, double* coef_a, double* coef_b, doubl
             }
 
             else if (is_litera(ptr_buf, i)) {
-                printf("Неккоректный ввод!\n");
+                printf_slow("Неккоректный ввод!\n");
 
                 return INCORRECT_INPUT;
             }
 
             else if (ptr_buf[i] == '-') {
                 if (if_me_in_num) {
-                    printf("Неккоректный ввод! минус внутри/сразу после числа.\n");
+                    printf_slow("Неккоректный ввод! минус внутри/сразу после числа.\n");
                     
                     return INCORRECT_INPUT;
                 }
@@ -127,7 +129,7 @@ int check_input(char* ptr_buf, size_t len, double* coef_a, double* coef_b, doubl
             
             else if (ptr_buf[i] == '+') {
                 if (if_me_in_num) {
-                    printf("Неккоректный ввод! плюс внутри/сразу после числа.\n");
+                    printf_slow("Неккоректный ввод! плюс внутри/сразу после числа.\n");
                     
                     return INCORRECT_INPUT;
                 }
@@ -145,13 +147,13 @@ int check_input(char* ptr_buf, size_t len, double* coef_a, double* coef_b, doubl
                 dots_counter += 1;
 
                 if (ptr_buf[i-1] == '.') {
-                    printf("точки, идущие подряд. некорректный ввод!\n");
+                    printf_slow("точки, идущие подряд. некорректный ввод!\n");
 
                     return INCORRECT_INPUT;
                 }
 
                 else if (if_me_in_num && dots_counter > 1) {
-                    printf("если эта ошибка прокнула, вы точно дебагер)).\n");
+                    printf_slow("если эта ошибка прокнула, вы точно дебагер)).\n");
                     
                     return INCORRECT_INPUT;
                 }
@@ -196,11 +198,11 @@ int check_input(char* ptr_buf, size_t len, double* coef_a, double* coef_b, doubl
     *coef_b = res_buf[1];
     *coef_c = res_buf[2];
 
-    printf("\nЯ думаю, вы имели в виду: a: %.7f b: %.7f c: %.7f\n", res_buf[0], res_buf[1], res_buf[2]); // отладочный
+    printf_slow("\nЯ думаю, вы имели в виду: a: %.7f b: %.7f c: %.7f\n", res_buf[0], res_buf[1], res_buf[2]); // отладочный
 
     for (int l = 0; l < 3; l++) {
         if (real_number_of_coeffs[l] == 0) {
-            printf("Кто-то не ввёл коэффициент!\n");
+            printf_slow("Кто-то не ввёл коэффициент!\n");
 
             return INCORRECT_INPUT;
         }
