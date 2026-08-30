@@ -81,6 +81,13 @@ extern test_case test_array_rand_real_roots[AMOUNT_OF_TESTS];
 extern test_case test_array_rand_complex_roots[AMOUNT_OF_TESTS];
 extern test_case test_array_rand_linear_case[AMOUNT_OF_TESTS];
 
+void no_tests();
+void only_tests();
+void call_help();
+void full(int graphic_index);
+
+void initialize_graphica(double coef_a, double coef_b, double coef_c); /* упростить work cycle of program graphics!!!! */
+
 void printf_slow(const char* format_string, ...);
 
 int check_equation_type(double coef_a);
@@ -100,9 +107,9 @@ int validate_status(int status,
 int read_file(char* filename_buf, char* file_content, 
               double* coef_a, double* coef_b, double* coef_c, 
               double* ptr_root_1, double* ptr_root_2, 
-              int* inprocess, int file_content_size, int filename_buf_size);
+              int* inprocess, int file_content_size, int filename_buf_size, int graphic_index);
 
-int work_cycle_of_program(int inprocess, int mode);
-int work_cycle_of_program_graphics(int inprocess, int mode); // в разработке прямо сейчас
+// int work_cycle_of_program(int inprocess, int mode);
+int work_cycle_of_program_graphics(int inprocess, int mode, int graphic_index); // в разработке прямо сейчас
 
 int select_mode();

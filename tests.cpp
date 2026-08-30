@@ -237,16 +237,19 @@ void check_num_of_passed_tests(int amount_of_passed_tests, int* inprocess) {
 
                 break;
             }
+
             else if (ptr_check_ans[0] == 'N' || ptr_check_ans[0] == 'n') {
                 printf_slow("Правильное решение.\n");
                 *inprocess = 0;
 
                 break;
             }
+
             else {
                 printf_slow("Ну сказали же, Y или N!\nЖду ваш ответ в корректном виде: ");
             }
         }
+        /* спокойно можно поместить в функцию */
     }
 
     else {
