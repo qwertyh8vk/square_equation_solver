@@ -4,7 +4,15 @@
 #define SCREEN_WIDTH  1200
 #define SCREEN_HEIGHT 1200
 
+#define X_MIN -40
+#define X_MAX  40
+#define dX     0.1
+
+#define MAX_NUM_OF_POINTS (int)((X_MAX-X_MIN) / dX)
+
 void draw_axes(int multiplier); /* рисует и разметку и декарта */
 void draw_graph_by_dots(int multiplier,
                         double coef_a, double coef_b, double coef_c);
-void draw_graph_by_spline(int multiplier);
+                        
+void draw_graph_by_spline(int multiplier, 
+                          double coef_a, double coef_b, double coef_c);

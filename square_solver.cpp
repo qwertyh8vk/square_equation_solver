@@ -278,7 +278,6 @@ void initialize_graphica(double coef_a, double coef_b, double coef_c)
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Trial window");
     
     SetTargetFPS(25);
-    SetExitKey(KEY_Q);
 
     while (!WindowShouldClose()) {
 
@@ -300,6 +299,7 @@ void initialize_graphica(double coef_a, double coef_b, double coef_c)
             ClearBackground(WHITE);
             draw_axes(multiplier);
             draw_graph_by_dots(multiplier, coef_a, coef_b, coef_c);
+            draw_graph_by_spline(multiplier, coef_a, coef_b, coef_c);
 
         EndDrawing();
     }

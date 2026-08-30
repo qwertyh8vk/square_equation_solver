@@ -31,47 +31,25 @@ void draw_axes(int multiplier) {
 }
 
 void draw_graph_by_dots(int multiplier,
-                        double coef_a, double coef_b, double coef_c) {
-    for (double i = -40; i < 40; i += 0.05) {
-        DrawCircle((i*multiplier) + SCREEN_WIDTH / 2, -((coef_a*i*i + coef_b*i + coef_c)*multiplier) + SCREEN_HEIGHT / 2, 1.75, VIOLET);
+                        double coef_a, double coef_b, double coef_c) 
+{
+    for (double i = X_MIN; i < X_MAX; i += 2 * dX) {
+        DrawCircle((i*multiplier) + SCREEN_WIDTH / 2, -((coef_a*i*i + coef_b*i + coef_c)*multiplier) + SCREEN_HEIGHT / 2, 2.75, MAGENTA);
     }
 }
 
-void draw_graph_by_spline(int multiplier) {
+void draw_graph_by_spline(int multiplier,
+                          double coef_a, double coef_b, double coef_c) 
+{
+    Vector2 points[MAX_NUM_OF_POINTS];
+    int p = 0;
+    for (double i = X_MIN; i < X_MAX; i += dX) {
 
+        points[p].x = ((i)*multiplier + SCREEN_WIDTH  / 2);
+        points[p].y = ((-1)*(coef_a*i*i + coef_b*i + coef_c)*multiplier + SCREEN_HEIGHT / 2);
+        p += 1;
+
+    }
+    DrawSplineCatmullRom(points, MAX_NUM_OF_POINTS, 2, MAGENTA);
 }
-// int main() {
 
-//     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Trial window");
-
-//     int multiplier = 40;
-//     int dmult = 10;
-
-//     SetTargetFPS(60);
-
-//     while (!WindowShouldClose()) 
-//     {
-//         BeginDrawing();
-
-//             if (GetMouseWheelMove() > 0) {
-//                 if (multiplier <= 600) {
-//                     multiplier += dmult;
-//                 }
-//             }
-
-//             else if (GetMouseWheelMove() < 0) {
-//                 if (multiplier >= 20) {
-//                     multiplier -= dmult;
-//                 }
-//             }
-
-//             ClearBackground(BLACK);
-//             draw_axes(multiplier);
-//             draw_graph_by_dots(multiplier);
-
-//         EndDrawing();
-//     }
-    
-//     CloseWindow();
-//     return 0;
-// }
