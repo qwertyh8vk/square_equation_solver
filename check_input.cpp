@@ -207,5 +207,6 @@ int check_input(char* ptr_buf, size_t len, double* coef_a, double* coef_b, doubl
             return INCORRECT_INPUT;
         }
     }
+    
     return SUCCESS;
 }

@@ -20,9 +20,9 @@
 
 #define TIMING 0
 
-#define RED    "\033[31m"
-#define GREEN  "\033[32m"
-#define BLUE   "\033[34m"
+#define RED_TEXT    "\033[31m"
+#define GREEN_TEXT  "\033[32m"
+#define BLUE_TEXT   "\033[34m"
 #define RESET  "\033[0m"
 
 enum modes {
@@ -102,8 +102,7 @@ int read_file(char* filename_buf, char* file_content,
               double* ptr_root_1, double* ptr_root_2, 
               int* inprocess, int file_content_size, int filename_buf_size);
 
-int work_cycle_of_program(double* coef_a, double* coef_b, double* coef_c, 
-                          double* ptr_root_1, double* ptr_root_2, 
-                          int* inprocess, int mode);
+int work_cycle_of_program(int inprocess, int mode);
+int work_cycle_of_program_graphics(int inprocess, int mode); // в разработке прямо сейчас
 
 int select_mode();

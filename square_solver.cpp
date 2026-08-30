@@ -1,9 +1,39 @@
 #include "square_solver.h"
 #include "check_input.h"
 #include "tests.h"
+#include "graphics.h"
 
 // g++ graphics.cpp -o graphics $(pkg-config --cflags --libs raylib) для себя шоб не забыть как компилить графику с рэйлибом
-// flags: -s = WITHOUT TESTS, -t = only TESTS, -h = help flag, 2printf'a, return 0
+
+// flags: 
+// -s = WITHOUT TESTS, 
+// -t = only TESTS, 
+// -h = help flag, 2printf'a, return 0
+// -f = full version without graphics
+// -g = full version with graphics.
+
+// int main(int argc, char *argv[]) {
+//     printf("Количество аргументов: %d\n", argc);
+//     for (int i = 0; i < argc; i++) {
+//         printf("Аргумент %d: %s\n", i, argv[i]);
+//     }
+//     return 0;
+// }
+
+// char* loh = "egor";
+// printf("%s", loh);
+// *(loh + 1) = 'p';
+// // printf("egor");
+
+// "egor"
+
+// print("egor")
+
+// char* loh = "egor"
+// printf("%s", loh)
+// loh[0] = 'p'
+// printf("egor")
+
 
 struct test_case test_array[AMOUNT_OF_TESTS] = { 
     {.coef_a = 1,    .coef_b = 5,    .coef_c = 7,     .number_of_roots_ref = NEGATIVE_PENALTY,   .x1_ref = NAN,      .x2_ref = NAN},
@@ -20,50 +50,157 @@ struct test_case test_array_rand_real_roots[AMOUNT_OF_TESTS]    = {};
 struct test_case test_array_rand_complex_roots[AMOUNT_OF_TESTS] = {};
 struct test_case test_array_rand_linear_case[AMOUNT_OF_TESTS]   = {};
 
-int main() {
-    
-    // char* loh = "egor";
-    // printf("%s", loh);
-    // *(loh + 1) = 'p';
-    // // printf("egor");
+int main(int argc, char* argv[]) {
 
-    printf_slow("Да здравствует МФТИ.\nСовершим проверку ручных и автоматических тестов.\n\n");
-    printf_slow("до скайнета осталось 30 секунд. тебе пиздец\n");
-
-    int inprocess = 1;
-    int mode      = 0;
-
-    double coef_a = 0, coef_b = 0, coef_c = 0;
-    double root_1 = 0, root_2 = 0;
-
-    double* ptr_root_1 = &root_1;
-    double* ptr_root_2 = &root_2;
-
-    initialize_auto_tests_structs_array();
-    int amount_of_passed_tests = run_all_tests();
-    check_num_of_passed_tests(amount_of_passed_tests, &inprocess);
-
-    if (inprocess) { 
-        mode = select_mode();
-        printf_slow("Решала квадратных уравнений. Чтобы выйти, нажмите Q (q)\n");
+    if (argc != 2) {
+        printf("Программа принимает на вход ровно 2 аргумента, включая название файла.\n");
+        return 0;
     }
 
-    work_cycle_of_program(&coef_a, &coef_b, &coef_c, 
-                          ptr_root_1, ptr_root_2, 
-                          &inprocess, mode);
+    else {
+        if      (!strcmp(argv[1], "-s")) {
+            int inprocess = 1;
+            int mode      = 0;
+            printf("\nПохуизм - это хорошо. с флагом -s скипаются тесты.\n");
+            printf_slow("Решала квадратных уравнений. Чтобы выйти, нажмите Q (q)\n\n");
+            mode = select_mode();
 
-    printf_slow("\nРабота программы успешно завершена.\n");
+            work_cycle_of_program(inprocess, mode);
+            printf_slow("\nРабота программы успешно завершена.\n");
+            
+            return 0;
+            /* функция run_work_cycle_only */
+        }
 
-    // "egor"
+        else if (!strcmp(argv[1], "-t")) {
 
-    // print("egor")
+            printf_slow("Да здравствует МФТИ.\nСовершим проверку ручных и автоматических тестов.\n");
+            printf_slow("И больше нихуя кстати, мы же в флаге -t\n");
 
-    // char* loh = "egor"
-    // printf("%s", loh)
-    // loh[0] = 'p'
-    // printf("egor")
+            initialize_auto_tests_structs_array();
+            int amount_of_passed_tests = run_all_tests();
+            check_num_of_passed_tests_tflag(amount_of_passed_tests);
+
+            return 0;
+            /* функция run_tests_only */
+        }
+
+        else if (!strcmp(argv[1], "-h")) {
+
+            printf("\nList of available flags:\n"
+                   "-h: help flag, which you've initialized\n"
+                   "-f: runs full version without graphics\n"
+                   "-g: runs full version including graphics\n"
+                   "-t: runs tests only to check the workability of program\n"
+                   "-s: skips tests and runs -g version independently of test results.\n\n");
+
+            return 0;
+            
+            /* функция run_help_info */
+        }
+
+        else if (!strcmp(argv[1], "-f")) {
+            printf_slow("Да здравствует МФТИ.\nСовершим проверку ручных и автоматических тестов.\n\n");
+            printf_slow("до скайнета осталось 30 секунд. тебе пиздец\n");
+
+            int inprocess = 1;
+            int mode      = 0;
+
+            // double coef_a = 0, coef_b = 0, coef_c = 0;
+            // double root_1 = 0, root_2 = 0;
+
+            // double* ptr_root_1 = &root_1;
+            // double* ptr_root_2 = &root_2;
+
+            initialize_auto_tests_structs_array();
+            int amount_of_passed_tests = run_all_tests();
+            check_num_of_passed_tests(amount_of_passed_tests, &inprocess);
+
+            if (inprocess) { 
+                mode = select_mode();
+                printf_slow("Решала квадратных уравнений. Чтобы выйти, нажмите Q (q)\n");
+            }
+
+            work_cycle_of_program(inprocess, mode);
+
+            printf_slow("\nРабота программы успешно завершена.\n");
+            
+            return 0;
+
+            /* подумать пока что */
+        }
+
+        else if (!strcmp(argv[1], "-g")) {
+            // full version + graphics
+            printf_slow("Да здравствует МФТИ.\nСовершим проверку ручных и автоматических тестов.\n\n");
+            printf_slow("до скайнета осталось 30 секунд. тебе пиздец\n");
+
+            int inprocess = 1;
+            int mode      = 0;
+
+            // double coef_a = 0, coef_b = 0, coef_c = 0;
+            // double root_1 = 0, root_2 = 0;
+
+            // double* ptr_root_1 = &root_1;
+            // double* ptr_root_2 = &root_2;
+
+            double coef_a = 1;
+            double coef_b = 1;
+            double coef_c = 1;
+
+            // InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Trial window");
+            // SetTargetFPS(60);
     
-    return 0;
+            // while(!WindowShouldClose()) {
+
+            //     if (GetMouseWheelMove() > 0) {
+
+            //         if (multiplier <= 600) {
+            //             multiplier += dmult;
+            //         }
+
+            //     }
+
+            //     else if (GetMouseWheelMove() < 0) {
+            //         if (multiplier >= 20) {
+            //             multiplier -= dmult;
+            //         }
+            //     }
+                
+            //     BeginDrawing();
+
+            //         ClearBackground(BLACK);
+            //         draw_axes(multiplier);
+            //         draw_graph_by_dots(multiplier, coef_a, coef_b, coef_c);
+
+            //     EndDrawing();
+
+            // }
+
+            // CloseWindow();
+
+            initialize_auto_tests_structs_array();
+            int amount_of_passed_tests = run_all_tests();
+            check_num_of_passed_tests(amount_of_passed_tests, &inprocess);
+
+            if (inprocess) { 
+                mode = select_mode();
+                printf_slow("Решала квадратных уравнений. Чтобы выйти, нажмите Q (q)\n");
+            }
+
+            work_cycle_of_program_graphics(inprocess, mode);
+
+            printf_slow("\nРабота программы успешно завершена.\n");
+            
+            return 0;
+        }
+
+        else {
+            printf("Unknown flag.\n Ebni -h to get help and see list of all the flags available.\n");
+
+            return 0;
+        }
+    }
 }
 
 void printf_slow(const char* format_string, ...) {
@@ -141,8 +278,6 @@ int read_file(char* filename_buf, char* file_content,
         FILE* file_pointer = fopen(ptr_filename, "r");
 
         if (file_pointer != NULL) {
-            printf_slow("Указанный файл не найден.\nВведите название считываемого файла (или q/Q'шку):");
-
             char* ptr_file_content = fgets(file_content, file_content_size, file_pointer); // sizeof(file_content) / sizeof(*file_content) не получится
 
             while (ptr_file_content != NULL) {
@@ -154,8 +289,8 @@ int read_file(char* filename_buf, char* file_content,
                 ptr_file_content = fgets(file_content, file_content_size, file_pointer);
             }
 
-            printf_slow("\nВы дошли до конца файла. Вы можете выйти или вписать название другого файла: ");
             fclose(file_pointer);
+            printf_slow("\nВы дошли до конца файла. Вы можете выйти или вписать название другого файла: ");
         }
         
         else {
@@ -170,13 +305,18 @@ int read_file(char* filename_buf, char* file_content,
 }
 
 
-int work_cycle_of_program(double* coef_a, double* coef_b, double* coef_c, 
-                          double* ptr_root_1, double* ptr_root_2, 
-                          int* inprocess, int mode) {
-    while (*inprocess)  {
+int work_cycle_of_program(int inprocess, int mode) {
 
-        assert((coef_a != NULL)     &&  (coef_b  != NULL)     &&  (coef_c != NULL)  && 
-               (ptr_root_1 != NULL) &&  (ptr_root_2 != NULL)  &&  (inprocess != NULL));
+    double coef_a = 0, coef_b = 0, coef_c = 0;
+    double root_1 = 0, root_2 = 0;
+
+    double* ptr_root_1 = &root_1;
+    double* ptr_root_2 = &root_2;
+
+    while (inprocess)  {
+
+        // assert((coef_a != NULL)     &&  (coef_b  != NULL)     &&  (coef_c != NULL)  && 
+        //        (ptr_root_1 != NULL) &&  (ptr_root_2 != NULL)  &&  (inprocess != NULL));
 
         if (mode == FROM_KEYBOARD) {
             char stdin_buf[DECENT] = {};
@@ -185,9 +325,9 @@ int work_cycle_of_program(double* coef_a, double* coef_b, double* coef_c,
             char* ptr_buf = fgets(stdin_buf, sizeof(stdin_buf) / sizeof(*stdin_buf), stdin);
 
             size_t len = strlen(stdin_buf);
-            int status = check_input(ptr_buf, len, coef_a, coef_b, coef_c);
+            int status = check_input(ptr_buf, len, &coef_a, &coef_b, &coef_c);
 
-            *inprocess = validate_status(status, *coef_a, *coef_b, *coef_c, ptr_root_1, ptr_root_2);
+            inprocess = validate_status(status, coef_a, coef_b, coef_c, ptr_root_1, ptr_root_2);
         }
 
         else {
@@ -198,8 +338,8 @@ int work_cycle_of_program(double* coef_a, double* coef_b, double* coef_c,
             int file_content_size = sizeof(file_content) / sizeof(*file_content);
 
             int status = read_file(filename_buf, file_content, 
-                                   coef_a, coef_b, coef_c, 
-                                   ptr_root_1, ptr_root_2, inprocess,
+                                   &coef_a, &coef_b, &coef_c, 
+                                   ptr_root_1, ptr_root_2, &inprocess,
                                    file_content_size, filename_buf_size);
             if (status == EXIT) {
                 return EXIT;
@@ -208,6 +348,70 @@ int work_cycle_of_program(double* coef_a, double* coef_b, double* coef_c,
             // return FILE_NOT_FOUND; // нет смысла в этом ретурне, поскоку в read file он не обрабатывается
         }
     }
+
+    return 0;
+}
+
+int work_cycle_of_program_graphics(int inprocess, int mode) {
+    double coef_a = 0, coef_b = 0, coef_c = 0;
+    double root_1 = 0, root_2 = 0;
+
+    double* ptr_root_1 = &root_1;
+    double* ptr_root_2 = &root_2;
+
+    int multiplier = 40;
+    int dmult = 10;
+
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Trial window");
+    SetTargetFPS(60);
+
+    while (inprocess && !WindowShouldClose())  {
+
+        if (mode == FROM_KEYBOARD) {
+            char stdin_buf[DECENT] = {};
+
+            printf_slow("\nВведите коэффициенты a, b, c: ");
+
+            char* ptr_buf = fgets(stdin_buf, sizeof(stdin_buf) / sizeof(*stdin_buf), stdin);
+
+            printf("sosal\n");
+
+            BeginDrawing();
+
+                ClearBackground(BLACK);
+                draw_axes(multiplier);
+                draw_graph_by_dots(multiplier, coef_a, coef_b, coef_c);
+
+            EndDrawing();
+            
+            size_t len = strlen(stdin_buf);
+            int status = check_input(ptr_buf, len, &coef_a, &coef_b, &coef_c);
+            inprocess = validate_status(status, coef_a, coef_b, coef_c, ptr_root_1, ptr_root_2);
+
+            printf("ya ueban\n");
+
+            // if (GetMouseWheelMove() > 0) {
+            //     if (multiplier <= 600) {
+            //         multiplier += dmult;
+            //     }
+
+            // }
+
+            // else if (GetMouseWheelMove() < 0) {
+            //     if (multiplier >= 20) {
+            //         multiplier -= dmult;
+            //     }
+            // }
+        }
+
+        else {
+            printf("К сожалению графика пока не реализована для ввода с файла,\nно я активно ебашу эту опцию.\n");
+
+            inprocess = 0;
+        }
+    }
+
+    CloseWindow();
 
     return 0;
 }

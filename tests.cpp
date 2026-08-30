@@ -35,7 +35,7 @@ int run_one_test(struct test_case test, int number) {
         || (compare_including_nans(x1, test.x1_ref) == 0) 
         || (compare_including_nans(x2, test.x2_ref) == 0)) 
     {
-        printf_slow(RED "TEST %d FAILED!\na = %lg, b = %lg, c = %lg"
+        printf_slow(RED_TEXT "TEST %d FAILED!\na = %lg, b = %lg, c = %lg"
                    "\nexpected amount of roots: %d"
                    "\nexpected roots: x1_ref = %lg, x2_ref = %lg"
                    "\ncalculated amount of roots: %d"
@@ -47,7 +47,7 @@ int run_one_test(struct test_case test, int number) {
     }
 
     else {
-        printf_slow(GREEN "TEST %d WAS PASSED SUCCESFULLY.\n" RESET, (number+1));
+        printf_slow(GREEN_TEXT "TEST %d WAS PASSED SUCCESFULLY.\n" RESET, (number+1));
 
         return TEST_PASSED;
     } 
@@ -247,6 +247,17 @@ void check_num_of_passed_tests(int amount_of_passed_tests, int* inprocess) {
                 printf_slow("Ну сказали же, Y или N!\nЖду ваш ответ в корректном виде: ");
             }
         }
+    }
+
+    else {
+        printf_slow("\nВсе тесты пройдены успешно. Фотомафу можно доверять.\n");
+    }
+}
+
+
+void check_num_of_passed_tests_tflag(int amount_of_passed_tests) {
+    if (amount_of_passed_tests != 4 * AMOUNT_OF_TESTS) {
+        printf_slow("Ну, че, хуета неработающая, что тут ещё сказать.\n");
     }
 
     else {

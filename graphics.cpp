@@ -1,17 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <math.h>
-#include <assert.h>
-#include <ctype.h>
-#include <string.h>
-#include <stdbool.h>
-
 #include "graphics.h"
-#include "/opt/homebrew/Cellar/raylib/6.0/include/raylib.h" // todo
-
-#define SCREEN_WIDTH  800
-#define SCREEN_HEIGHT 800
+#include "square_solver.h"
 
 void draw_axes(int multiplier) {
     Vector2 x_axis_start = {0, SCREEN_HEIGHT / 2};
@@ -42,87 +30,49 @@ void draw_axes(int multiplier) {
     }
 }
 
-void draw_graph_by_dots(int multiplier) {
+void draw_graph_by_dots(int multiplier,
+                        double coef_a, double coef_b, double coef_c) {
     for (double i = -40; i < 40; i += 0.05) {
-        DrawCircle((i*multiplier) + SCREEN_WIDTH / 2, -(i*i*multiplier + 2*i - 10) + SCREEN_HEIGHT / 2, 2, DARKBLUE);
+        DrawCircle((i*multiplier) + SCREEN_WIDTH / 2, -((coef_a*i*i + coef_b*i + coef_c)*multiplier) + SCREEN_HEIGHT / 2, 2, DARKBLUE);
     }
 }
+
 void draw_graph_by_spline(int multiplier) {
 
 }
 
-int main() {
+// int main() {
 
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Trial window");
+//     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Trial window");
 
-    int multiplier = 40;
-    int dmult = 10;
+//     int multiplier = 40;
+//     int dmult = 10;
 
-    SetTargetFPS(60);
+//     SetTargetFPS(60);
 
-    while (!WindowShouldClose()) 
-    {
-        BeginDrawing();
+//     while (!WindowShouldClose()) 
+//     {
+//         BeginDrawing();
 
-            if (GetMouseWheelMove() > 0) {
-                if (multiplier <= 600) {
-                    multiplier += dmult;
-                }
-            }
+//             if (GetMouseWheelMove() > 0) {
+//                 if (multiplier <= 600) {
+//                     multiplier += dmult;
+//                 }
+//             }
 
-            else if (GetMouseWheelMove() < 0) {
-                if (multiplier >= 20) {
-                    multiplier -= dmult;
-                }
-            }
+//             else if (GetMouseWheelMove() < 0) {
+//                 if (multiplier >= 20) {
+//                     multiplier -= dmult;
+//                 }
+//             }
 
-            ClearBackground(BLACK);
-            draw_axes(multiplier);
-            draw_graph_by_dots(multiplier);
+//             ClearBackground(BLACK);
+//             draw_axes(multiplier);
+//             draw_graph_by_dots(multiplier);
 
-        EndDrawing();
-    }
+//         EndDrawing();
+//     }
     
-    CloseWindow();
-    return 0;
-}
-
-
-
-
-void initialize_two_dimens_array() {
-    char matrix[SIZE][SIZE];
-
-    for(int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            matrix[i][j] = ' ';
-        }
-    }
-
-    for (int i = 0; i < SIZE; i++) {
-        matrix[30][i] = '-';
-        matrix[i][30] = '|';
-    }
-
-    matrix[30][30] = '0';
-    matrix[30][32] = '2';
-    matrix[28][30] = '2';
-
-    matrix[29][31] = '*';
-    matrix[26][32] = '*';
-    matrix[21][33] = '*';
-    matrix[14][34] = '*';
-    matrix[5][35]  = '*';
-
-    for (int i = 0; i < SIZE; i++) {
-
-        for (int j = 0; j < SIZE; j++) {
-            printf("%c ", matrix[i][j]);
-        }
-        
-        printf("\n");
-    }
-
-}
-
-// (1;1) (2;4) (3;9) (4;16) (5;25)
+//     CloseWindow();
+//     return 0;
+// }
